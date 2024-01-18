@@ -1,15 +1,10 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using MarketAPI.Data.Models;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MarketAPI.Data.Models
+namespace MarketAPI.Models
 {
-    public class User
+    public class UserViewModel
     {
-
-        [Key]
-        public Guid Id { get; set; }
-
         [Required]
         [StringLength(16)]
         public string FirstName { get; set; }
@@ -41,7 +36,9 @@ namespace MarketAPI.Data.Models
         [StringLength(220)]
         public string Description { get; set; }
 
-        public List<Offer> Offers { get; set; } = new List<Offer>();
+        [Required]
+        public IFormFile PictureFile { get; set; }
 
+        public List<Offer> Offers { get; set; } = new List<Offer>();
     }
 }

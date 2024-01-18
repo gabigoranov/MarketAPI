@@ -30,6 +30,9 @@ namespace MarketAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("OfferTypeId")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
@@ -41,11 +44,70 @@ namespace MarketAPI.Migrations
                         .HasMaxLength(14)
                         .HasColumnType("nvarchar(14)");
 
+                    b.Property<bool>("inSeason")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("OfferTypeId");
 
                     b.HasIndex("OwnerId");
 
                     b.ToTable("Offers");
+                });
+
+            modelBuilder.Entity("MarketAPI.Data.Models.OfferType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OfferTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Apple"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Pear"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Pumpkin"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Tomato"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Egg"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Milk"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Honey"
+                        });
                 });
 
             modelBuilder.Entity("MarketAPI.Data.Models.User", b =>
@@ -95,11 +157,19 @@ namespace MarketAPI.Migrations
 
             modelBuilder.Entity("MarketAPI.Data.Models.Offer", b =>
                 {
+                    b.HasOne("MarketAPI.Data.Models.OfferType", "OfferType")
+                        .WithMany()
+                        .HasForeignKey("OfferTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MarketAPI.Data.Models.User", "Owner")
                         .WithMany("Offers")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("OfferType");
 
                     b.Navigation("Owner");
                 });

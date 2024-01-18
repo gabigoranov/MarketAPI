@@ -15,8 +15,14 @@ namespace MarketAPI.Models
 
         [Required]
         public double PricePerKG { get; set; }
+
         [Required]
-        [ForeignKey(nameof(User))]
+        public bool inSeason { get; set; }
+
+        [Required]
+        public int OfferTypeId { get; set; }
+
+        [Required]
         public Guid OwnerId { get; set; }
     }
 }

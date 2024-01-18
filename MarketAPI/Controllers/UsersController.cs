@@ -1,6 +1,8 @@
 ﻿using MarketAPI.Data;
 using MarketAPI.Data.Models;
+using MarketAPI.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,12 +25,9 @@ namespace MarketAPI.Controllers
         [Route("login")]
         public IActionResult Login(string email, string password)
         {
-            User user = _context.Users.Include(x => x.Offers).First(u => u.Email == email && u.Password == password);
-
+            User? user = _context.Users.Include(x => x.Offers).FirstOrDefault(u => u.Email == email && u.Password == password);
             if (user != null)
             {
-                Console.WriteLine(user.Offers.Count);
-                Console.WriteLine(user);
                 return Ok(user);
             }
 
@@ -57,13 +56,47 @@ namespace MarketAPI.Controllers
             }
             else
             {
-                return BadRequest("User already in Database");
+                return BadRequest("User with email already in Database");
             }
         }
-        
-        //TODO: Implement service
-        //TODO: Add method for editing
-        //TODO: Add method for deleting
-    
+
+        [HttpPost]
+        [Route("edit")]
+        public async Task<IActionResult> EditUser(User userEdit)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(userEdit);
+            }
+            User user = await _context.Users.Include(x => x.Offers).SingleAsync(x => x.Id == userEdit.Id);
+            _context.Update(user);
+
+            user.Age = userEdit.Age;
+            user.isVerified = userEdit.isVerified;
+            user.PhoneNumber = userEdit.PhoneNumber;
+            user.Email = userEdit.Email;
+            user.FirstName = userEdit.FirstName;    
+            user.LastName = userEdit.LastName;
+            user.Description = userEdit.Description;
+
+            _context.Entry(user).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok("Edited Succesfully");    
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            if (!_context.Users.Any(x => x.Id == id)) return BadRequest("Invalid Id");    
+            var user = await _context.Users.SingleAsync(x => x.Id == id);
+            _context.Users.Remove(user);
+
+            await _context.SaveChangesAsync();
+
+            return Ok("Deleted Succesfully");
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MarketAPI.Data.Models;
+using MarketAPI.Models;
 
 namespace MarketAPI.Services.Offers
 {
@@ -7,5 +8,8 @@ namespace MarketAPI.Services.Offers
         Task<List<Offer>> GetAllAsync();
         Task AddOffer(Offer offer);
         Task<Offer> GetByIdAsync(int id);
+        Task RemoveByIdAsync(int id);
+
+        Task EditAsync(OfferViewModel offerEdit);
     }
 }

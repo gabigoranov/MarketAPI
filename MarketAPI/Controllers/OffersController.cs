@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MarketAPI.Services.Offers;
 using MarketAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace MarketAPI.Controllers
 {
@@ -39,7 +40,9 @@ namespace MarketAPI.Controllers
                 {
                     Title = offer.Title,
                     PricePerKG = offer.PricePerKG,
-                    OwnerId = offer.OwnerId
+                    OfferTypeId = offer.OfferTypeId,
+                    OwnerId = offer.OwnerId,
+                    inSeason = offer.inSeason
                 });
                 return Ok("Offer Added Succesfuly");
             }
@@ -49,8 +52,32 @@ namespace MarketAPI.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("edit")]
+        public async Task<IActionResult> EditOffer(OfferViewModel offer)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(offer);
+            }
 
-        //TODO: Add method for editing
-        //TODO: Add method for deleting
+            await _service.EditAsync(offer);
+
+            return Ok("Edited Succesfully");
+        }
+
+        [HttpDelete]
+        [Route("delete")]
+        public async Task<IActionResult> DeleteOffer(int id)
+        {
+            var offers = await _service.GetAllAsync();
+
+            if (!offers.Any(x => x.Id == id)) return BadRequest("Invalid Id");
+            var offer = await _service.GetByIdAsync(id);
+
+            await _service.RemoveByIdAsync(id);
+
+            return Ok("Deleted Succesfully");
+        }
     }
 }

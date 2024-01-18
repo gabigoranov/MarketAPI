@@ -4,7 +4,7 @@
 
 namespace MarketAPI.Migrations
 {
-    public partial class Fix3 : Migration
+    public partial class InitialFix : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

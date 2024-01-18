@@ -20,5 +20,13 @@ namespace MarketAPI.Data.Models
         public Guid OwnerId { get; set; }
         public User Owner { get; set; }
 
+        [Required]
+        public bool inSeason { get; set; }
+
+        [Required]
+        [ForeignKey(nameof(OfferType))]
+        public int OfferTypeId { get; set; }
+
+        public OfferType OfferType { get; set; }
     }
 }
