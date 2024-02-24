@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MarketAPI.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,11 +27,11 @@ namespace MarketAPI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
-                    isVerified = table.Column<bool>(type: "bit", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rating = table.Column<double>(type: "float", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(220)", maxLength: 220, nullable: false)
@@ -47,10 +47,9 @@ namespace MarketAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(28)", maxLength: 28, nullable: false),
                     PricePerKG = table.Column<double>(type: "float", nullable: false),
                     OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    inSeason = table.Column<bool>(type: "bit", nullable: false),
                     OfferTypeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -68,20 +67,6 @@ namespace MarketAPI.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "OfferTypes",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Apple" },
-                    { 2, "Pear" },
-                    { 3, "Pumpkin" },
-                    { 4, "Tomato" },
-                    { 5, "Egg" },
-                    { 6, "Milk" },
-                    { 7, "Honey" }
                 });
 
             migrationBuilder.CreateIndex(

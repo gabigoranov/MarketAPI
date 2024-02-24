@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20240109133721_InitialFix")]
-    partial class InitialFix
+    [Migration("20240224152117_AddTownProperty")]
+    partial class AddTownProperty
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,11 +43,8 @@ namespace MarketAPI.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(14)
-                        .HasColumnType("nvarchar(14)");
-
-                    b.Property<bool>("inSeason")
-                        .HasColumnType("bit");
+                        .HasMaxLength(28)
+                        .HasColumnType("nvarchar(28)");
 
                     b.HasKey("Id");
 
@@ -73,43 +70,6 @@ namespace MarketAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OfferTypes");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Apple"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Pear"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Pumpkin"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Tomato"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Egg"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Milk"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Honey"
-                        });
                 });
 
             modelBuilder.Entity("MarketAPI.Data.Models.User", b =>
@@ -132,13 +92,13 @@ namespace MarketAPI.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasMaxLength(16)
-                        .HasColumnType("nvarchar(16)");
+                        .HasMaxLength(12)
+                        .HasColumnType("nvarchar(12)");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -149,8 +109,12 @@ namespace MarketAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("isVerified")
-                        .HasColumnType("bit");
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Town")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

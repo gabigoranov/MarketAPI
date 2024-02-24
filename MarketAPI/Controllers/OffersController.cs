@@ -13,10 +13,11 @@ namespace MarketAPI.Controllers
     public class OffersController : ControllerBase
     {
         private readonly IOffersService _service;
-
-        public OffersController(IOffersService service)
+        private readonly ApiContext _context;
+        public OffersController(IOffersService service, ApiContext _context)
         {
             _service = service;
+            this._context = _context;
         }
 
         [HttpGet]
@@ -42,7 +43,8 @@ namespace MarketAPI.Controllers
                     PricePerKG = offer.PricePerKG,
                     OfferTypeId = offer.OfferTypeId,
                     OwnerId = offer.OwnerId,
-                    inSeason = offer.inSeason
+                    Owner = await _context.Users.FirstOrDefaultAsync(x => x.Id == offer.OwnerId),
+                    OfferType = await _context.OfferTypes.FirstOrDefaultAsync(x => x.Id == offer.OfferTypeId),
                 });
                 return Ok("Offer Added Succesfuly");
             }
@@ -50,6 +52,15 @@ namespace MarketAPI.Controllers
             {
                 return BadRequest("Offer already in Database");
             }
+        }
+
+        [HttpPost]
+        [Route("addOfferType")]
+        public async Task<IActionResult> AddOfferType(OfferType offerType)
+        {
+            await _context.OfferTypes.AddAsync(offerType);
+            await _context.SaveChangesAsync();
+            return Ok("Offer Added Succesfuly");
         }
 
         [HttpPost]

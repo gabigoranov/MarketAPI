@@ -47,9 +47,10 @@ namespace MarketAPI.Controllers
                     Email = user.Email, 
                     PhoneNumber = user.PhoneNumber,
                     Age = user.Age,
-                    isVerified = user.isVerified,
                     Description = user.Description,
                     Password = user.Password,
+                    Rating = 0.0,
+                    Town = user.Town,
                 });
                 _context.SaveChanges();
                 return Ok($"User: {user.FirstName} added to Database");
@@ -72,7 +73,6 @@ namespace MarketAPI.Controllers
             _context.Update(user);
 
             user.Age = userEdit.Age;
-            user.isVerified = userEdit.isVerified;
             user.PhoneNumber = userEdit.PhoneNumber;
             user.Email = userEdit.Email;
             user.FirstName = userEdit.FirstName;    

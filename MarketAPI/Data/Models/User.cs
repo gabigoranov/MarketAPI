@@ -11,22 +11,23 @@ namespace MarketAPI.Data.Models
         public Guid Id { get; set; }
 
         [Required]
-        [StringLength(16)]
+        [StringLength(12)]
         public string FirstName { get; set; }
 
         [Required]
-        [StringLength(16)]
+        [StringLength(12)]
         public string LastName { get; set; }
 
         [Required]
         public int Age { get; set; }
 
-        [Required]
-        public bool isVerified { get; set; }
 
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+
+        [Required]
+        public double Rating { get; set; } = 0.0;
 
         [Required]
         [Phone]
@@ -41,7 +42,11 @@ namespace MarketAPI.Data.Models
         [StringLength(220)]
         public string Description { get; set; }
 
+        [Required]
+        public string Town { get; set; }
         public List<Offer> Offers { get; set; } = new List<Offer>();
+
+        
 
     }
 }

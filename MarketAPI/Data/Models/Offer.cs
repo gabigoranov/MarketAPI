@@ -10,7 +10,7 @@ namespace MarketAPI.Data.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(14)]
+        [StringLength(28)]
         public string Title { get; set; }
 
         [Required]
@@ -19,9 +19,6 @@ namespace MarketAPI.Data.Models
         [ForeignKey(nameof(User))]
         public Guid OwnerId { get; set; }
         public User Owner { get; set; }
-
-        [Required]
-        public bool inSeason { get; set; }
 
         [Required]
         [ForeignKey(nameof(OfferType))]

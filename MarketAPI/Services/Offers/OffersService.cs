@@ -38,7 +38,7 @@ namespace MarketAPI.Services.Offers
 
         public async Task<List<Offer>> GetAllAsync()
         {
-            return await _context.Offers.Include(x => x.Owner).ToListAsync();
+            return await _context.Offers.Include(x => x.Owner).Take(500).ToListAsync();
         }
 
         public async Task<Offer> GetByIdAsync(int id)
