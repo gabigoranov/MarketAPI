@@ -31,6 +31,8 @@ namespace MarketAPI.Services.Offers
 
             offer.Title = offerEdit.Title;
             offer.PricePerKG = offerEdit.PricePerKG;
+            offer.OfferTypeId = offerEdit.OfferTypeId;
+            offer.Description = offerEdit.Description;
 
             _context.Entry(offer).State = EntityState.Modified;
             _context.SaveChanges();
@@ -38,7 +40,12 @@ namespace MarketAPI.Services.Offers
 
         public async Task<List<Offer>> GetAllAsync()
         {
-            return await _context.Offers.Include(x => x.Owner).Take(500).ToListAsync();
+            return await _context.Offers.Take(500).ToListAsync(); //??? .Include(x => x.Owner).
+        }
+
+        public async Task<List<Offer>> SearchAsync(string input, string town)
+        {
+            return await _context.Offers.Where(x => x.Title.ToLower().Contains(input.ToLower())).OrderBy(x => x.Town == town).ToListAsync();
         }
 
         public async Task<Offer> GetByIdAsync(int id)

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -46,6 +47,11 @@ namespace MarketAPI.Data.Models
         public string Town { get; set; }
         public List<Offer> Offers { get; set; } = new List<Offer>();
 
+        [Required]
+        public bool isSeller { get; set; }
+
+        public virtual ICollection<Order> BoughtOrders { get; set; } = new List<Order>();
+        public virtual ICollection<Order> SoldOrders { get; set; } = new List<Order>();
         
 
     }

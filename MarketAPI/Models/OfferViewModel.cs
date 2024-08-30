@@ -10,14 +10,19 @@ namespace MarketAPI.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(14)]
+        [StringLength(28)]
         public string Title { get; set; }
 
         [Required]
-        public double PricePerKG { get; set; }
+        [StringLength(16)]
+        public string Town { get; set; }
 
         [Required]
-        public bool inSeason { get; set; }
+        [StringLength(300)]
+        public string Description { get; set; }
+
+        [Required]
+        public double PricePerKG { get; set; }
 
         [Required]
         public int OfferTypeId { get; set; }

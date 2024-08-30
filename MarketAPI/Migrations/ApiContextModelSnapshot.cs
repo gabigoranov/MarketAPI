@@ -22,6 +22,27 @@ namespace MarketAPI.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("MarketAPI.Data.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("MarketAPI.Data.Models.Offer", b =>
                 {
                     b.Property<int>("Id")
@@ -29,6 +50,11 @@ namespace MarketAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<int>("OfferTypeId")
                         .HasColumnType("int");
@@ -43,6 +69,11 @@ namespace MarketAPI.Migrations
                         .IsRequired()
                         .HasMaxLength(28)
                         .HasColumnType("nvarchar(28)");
+
+                    b.Property<string>("Town")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
 
                     b.HasKey("Id");
 
@@ -68,6 +99,102 @@ namespace MarketAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OfferTypes");
+                });
+
+            modelBuilder.Entity("MarketAPI.Data.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("BuyerId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("OfferId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Quantity")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("SellerId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.HasIndex("OfferId");
+
+                    b.HasIndex("SellerId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("MarketAPI.Data.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Offer")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("MarketAPI.Data.Models.Stock", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("OfferTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Quantity")
+                        .HasColumnType("float");
+
+                    b.Property<Guid>("SellerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OfferTypeId");
+
+                    b.HasIndex("SellerId");
+
+                    b.ToTable("Stocks");
                 });
 
             modelBuilder.Entity("MarketAPI.Data.Models.User", b =>
@@ -114,6 +241,9 @@ namespace MarketAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("isSeller")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -138,9 +268,64 @@ namespace MarketAPI.Migrations
                     b.Navigation("Owner");
                 });
 
+            modelBuilder.Entity("MarketAPI.Data.Models.Order", b =>
+                {
+                    b.HasOne("MarketAPI.Data.Models.User", "Buyer")
+                        .WithMany("BoughtOrders")
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MarketAPI.Data.Models.Offer", "Offer")
+                        .WithMany("Orders")
+                        .HasForeignKey("OfferId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MarketAPI.Data.Models.User", "Seller")
+                        .WithMany("SoldOrders")
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Buyer");
+
+                    b.Navigation("Offer");
+
+                    b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("MarketAPI.Data.Models.Stock", b =>
+                {
+                    b.HasOne("MarketAPI.Data.Models.OfferType", "OfferType")
+                        .WithMany()
+                        .HasForeignKey("OfferTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MarketAPI.Data.Models.User", "Seller")
+                        .WithMany()
+                        .HasForeignKey("SellerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OfferType");
+
+                    b.Navigation("Seller");
+                });
+
+            modelBuilder.Entity("MarketAPI.Data.Models.Offer", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("MarketAPI.Data.Models.User", b =>
                 {
+                    b.Navigation("BoughtOrders");
+
                     b.Navigation("Offers");
+
+                    b.Navigation("SoldOrders");
                 });
 #pragma warning restore 612, 618
         }

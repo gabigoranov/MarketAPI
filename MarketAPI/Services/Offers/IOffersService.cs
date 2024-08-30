@@ -9,6 +9,7 @@ namespace MarketAPI.Services.Offers
         Task AddOffer(Offer offer);
         Task<Offer> GetByIdAsync(int id);
         Task RemoveByIdAsync(int id);
+        Task<List<Offer>> SearchAsync(string input, string town);
 
         Task EditAsync(OfferViewModel offerEdit);
     }

@@ -14,6 +14,14 @@ namespace MarketAPI.Data.Models
         public string Title { get; set; }
 
         [Required]
+        [StringLength(16)]
+        public string Town { get; set; }
+
+        [Required]
+        [StringLength(300)]
+        public string Description { get; set; }
+
+        [Required]
         public double PricePerKG { get; set; }
         [Required]
         [ForeignKey(nameof(User))]
@@ -25,5 +33,9 @@ namespace MarketAPI.Data.Models
         public int OfferTypeId { get; set; }
 
         public OfferType OfferType { get; set; }
+
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+
     }
 }

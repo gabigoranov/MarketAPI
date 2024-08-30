@@ -31,7 +31,20 @@ namespace MarketAPI.Controllers
                 return Ok(user);
             }
 
-            return BadRequest("User with doesn't exist");
+            return BadRequest("User with data doesn't exist");
+        }
+
+        [HttpGet]
+        [Route("getWithId")]
+        public IActionResult getWithId(Guid id)
+        {
+            User? user = _context.Users.Include(x => x.Offers).FirstOrDefault(u => u.Id == id);
+            if (user != null)
+            {
+                return Ok(user);
+            }
+
+            return BadRequest("User with id doesn't exist");
         }
 
         [HttpPost]
@@ -51,6 +64,7 @@ namespace MarketAPI.Controllers
                     Password = user.Password,
                     Rating = 0.0,
                     Town = user.Town,
+                    isSeller = user.isSeller,
                 });
                 _context.SaveChanges();
                 return Ok($"User: {user.FirstName} added to Database");

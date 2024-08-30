@@ -30,6 +30,16 @@ namespace MarketAPI.Controllers
             return Ok(products);
         }
 
+        [HttpGet]
+        [Route("search")]
+        public async Task<IActionResult> Search(string input, string prefferedTown)
+        {
+            List<Offer> products = await _service.SearchAsync(input, prefferedTown);
+
+
+            return Ok(products);
+        }
+
         [HttpPost]
         [Route("add")]
         public async Task<IActionResult> Add(OfferViewModel offer)
@@ -40,9 +50,11 @@ namespace MarketAPI.Controllers
                 await _service.AddOffer(new Offer()
                 {
                     Title = offer.Title,
+                    Description = offer.Description,
                     PricePerKG = offer.PricePerKG,
                     OfferTypeId = offer.OfferTypeId,
                     OwnerId = offer.OwnerId,
+                    Town = offer.Town,
                     Owner = await _context.Users.FirstOrDefaultAsync(x => x.Id == offer.OwnerId),
                     OfferType = await _context.OfferTypes.FirstOrDefaultAsync(x => x.Id == offer.OfferTypeId),
                 });
