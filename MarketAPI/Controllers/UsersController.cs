@@ -25,10 +25,19 @@ namespace MarketAPI.Controllers
         [Route("login")]
         public IActionResult Login(string email, string password)
         {
-            User? user = _context.Users.Include(x => x.Offers).FirstOrDefault(u => u.Email == email && u.Password == password);
-            if (user != null)
+            bool isSeller = _context.Users.FirstOrDefault(u => u.Email == email && u.Password == password).isSeller;
+            if (isSeller != null)
             {
-                return Ok(user);
+                if (isSeller)
+                {
+                    Seller? user = _context.Sellers.Include(x => x.Offers).Include(x => x.SoldOrders).FirstOrDefault(u => u.Email == email && u.Password == password);
+                    return Ok(user);
+                }
+                else
+                {
+                    User? user = _context.Users.Include(x => x.BoughtOrders).FirstOrDefault(u => u.Email == email && u.Password == password);
+                    return Ok(user);
+                }
             }
 
             return BadRequest("User with data doesn't exist");
@@ -38,10 +47,19 @@ namespace MarketAPI.Controllers
         [Route("getWithId")]
         public IActionResult getWithId(Guid id)
         {
-            User? user = _context.Users.Include(x => x.Offers).FirstOrDefault(u => u.Id == id);
-            if (user != null)
+            bool isSeller = _context.Users.FirstOrDefault(u => u.Id == id).isSeller;
+            if (isSeller != null)
             {
-                return Ok(user);
+                if (isSeller)
+                {
+                    Seller? user = _context.Sellers.Include(x => x.Offers).Include(x => x.SoldOrders).FirstOrDefault(u => u.Id == id);
+                    return Ok(user);
+                }
+                else
+                {
+                    User? user = _context.Users.Include(x => x.BoughtOrders).FirstOrDefault(u => u.Id == id);
+                    return Ok(user);
+                }
             }
 
             return BadRequest("User with id doesn't exist");

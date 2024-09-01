@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20240830105226_NewStuffAgain")]
-    partial class NewStuffAgain
+    [Migration("20240901095130_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -115,6 +115,10 @@ namespace MarketAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("BuyerId")
+                        .IsRequired()
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("OfferId")
                         .HasColumnType("int");
 
@@ -129,6 +133,8 @@ namespace MarketAPI.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
 
                     b.HasIndex("OfferId");
 
@@ -207,6 +213,10 @@ namespace MarketAPI.Migrations
                         .HasMaxLength(220)
                         .HasColumnType("nvarchar(220)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -243,6 +253,15 @@ namespace MarketAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+                });
+
+            modelBuilder.Entity("MarketAPI.Data.Models.Seller", b =>
+                {
+                    b.HasBaseType("MarketAPI.Data.Models.User");
+
+                    b.HasDiscriminator().HasValue("Seller");
                 });
 
             modelBuilder.Entity("MarketAPI.Data.Models.Offer", b =>
@@ -266,17 +285,25 @@ namespace MarketAPI.Migrations
 
             modelBuilder.Entity("MarketAPI.Data.Models.Order", b =>
                 {
+                    b.HasOne("MarketAPI.Data.Models.User", "Buyer")
+                        .WithMany("BoughtOrders")
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("MarketAPI.Data.Models.Offer", "Offer")
                         .WithMany("Orders")
                         .HasForeignKey("OfferId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MarketAPI.Data.Models.User", "Seller")
+                    b.HasOne("MarketAPI.Data.Models.Seller", "Seller")
                         .WithMany("SoldOrders")
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Buyer");
 
                     b.Navigation("Offer");
 
@@ -309,8 +336,13 @@ namespace MarketAPI.Migrations
 
             modelBuilder.Entity("MarketAPI.Data.Models.User", b =>
                 {
-                    b.Navigation("Offers");
+                    b.Navigation("BoughtOrders");
 
+                    b.Navigation("Offers");
+                });
+
+            modelBuilder.Entity("MarketAPI.Data.Models.Seller", b =>
+                {
                     b.Navigation("SoldOrders");
                 });
 #pragma warning restore 612, 618

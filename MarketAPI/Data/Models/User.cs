@@ -50,8 +50,7 @@ namespace MarketAPI.Data.Models
         [Required]
         public bool isSeller { get; set; }
 
-        public virtual ICollection<Order> BoughtOrders { get; set; } = new List<Order>();
-        public virtual ICollection<Order> SoldOrders { get; set; } = new List<Order>();
+        public ICollection<Order> BoughtOrders { get; set; } = new List<Order>();
         
 
     }

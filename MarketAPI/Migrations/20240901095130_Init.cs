@@ -66,7 +66,8 @@ namespace MarketAPI.Migrations
                     Password = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(220)", maxLength: 220, nullable: false),
                     Town = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    isSeller = table.Column<bool>(type: "bit", nullable: false)
+                    isSeller = table.Column<bool>(type: "bit", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -140,7 +141,9 @@ namespace MarketAPI.Migrations
                     Quantity = table.Column<double>(type: "float", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OfferId = table.Column<int>(type: "int", nullable: false)
+                    OfferId = table.Column<int>(type: "int", nullable: false),
+                    BuyerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SellerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -149,6 +152,18 @@ namespace MarketAPI.Migrations
                         name: "FK_Orders_Offers_OfferId",
                         column: x => x.OfferId,
                         principalTable: "Offers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_BuyerId",
+                        column: x => x.BuyerId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_Users_SellerId",
+                        column: x => x.SellerId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -164,9 +179,19 @@ namespace MarketAPI.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_BuyerId",
+                table: "Orders",
+                column: "BuyerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_OfferId",
                 table: "Orders",
                 column: "OfferId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_SellerId",
+                table: "Orders",
+                column: "SellerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stocks_OfferTypeId",

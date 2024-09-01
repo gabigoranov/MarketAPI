@@ -247,6 +247,15 @@ namespace MarketAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasDiscriminator<bool>("isSeller").HasValue(false);
+                });
+
+            modelBuilder.Entity("MarketAPI.Data.Models.Seller", b =>
+                {
+                    b.HasBaseType("MarketAPI.Data.Models.User");
+
+                    b.HasDiscriminator().HasValue(true);
                 });
 
             modelBuilder.Entity("MarketAPI.Data.Models.Offer", b =>
@@ -282,7 +291,7 @@ namespace MarketAPI.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MarketAPI.Data.Models.User", "Seller")
+                    b.HasOne("MarketAPI.Data.Models.Seller", "Seller")
                         .WithMany("SoldOrders")
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -324,7 +333,10 @@ namespace MarketAPI.Migrations
                     b.Navigation("BoughtOrders");
 
                     b.Navigation("Offers");
+                });
 
+            modelBuilder.Entity("MarketAPI.Data.Models.Seller", b =>
+                {
                     b.Navigation("SoldOrders");
                 });
 #pragma warning restore 612, 618

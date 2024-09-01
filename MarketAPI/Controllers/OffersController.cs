@@ -55,8 +55,8 @@ namespace MarketAPI.Controllers
                     OfferTypeId = offer.OfferTypeId,
                     OwnerId = offer.OwnerId,
                     Town = offer.Town,
-                    Owner = await _context.Users.FirstOrDefaultAsync(x => x.Id == offer.OwnerId),
-                    OfferType = await _context.OfferTypes.FirstOrDefaultAsync(x => x.Id == offer.OfferTypeId),
+                    Owner = await _context.Users.FirstAsync(x => x.Id == offer.OwnerId),
+                    OfferType = await _context.OfferTypes.FirstAsync(x => x.Id == offer.OfferTypeId),
                 });
                 return Ok("Offer Added Succesfuly");
             }

@@ -18,6 +18,7 @@ namespace MarketAPI.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Seller> Sellers { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -55,6 +56,10 @@ namespace MarketAPI.Data
             builder.Entity<User>().Navigation(x => x.Offers).AutoInclude(true);
             
             builder.Entity<User>().Property(typeof(double), "Rating");
+            builder.Entity<User>()
+                .HasDiscriminator<bool>(x => x.isSeller)
+                .HasValue<User>(false)
+                .HasValue<Seller>(true);
 
             
 

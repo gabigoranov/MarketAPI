@@ -24,7 +24,7 @@ namespace MarketAPI.Data.Models
         public User Buyer { get; set; }
 
         public Guid? SellerId { get; set; }
-        public User Seller { get; set; }
+        public Seller Seller { get; set; }
 
     }
 }
