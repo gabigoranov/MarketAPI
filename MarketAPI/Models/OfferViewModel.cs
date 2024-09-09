@@ -25,7 +25,7 @@ namespace MarketAPI.Models
         public double PricePerKG { get; set; }
 
         [Required]
-        public int OfferTypeId { get; set; }
+        public int StockId { get; set; }
 
         [Required]
         public Guid OwnerId { get; set; }

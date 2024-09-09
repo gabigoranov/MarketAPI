@@ -66,42 +66,11 @@ namespace MarketAPI.Migrations
                     Password = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(220)", maxLength: 220, nullable: false),
                     Town = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    isSeller = table.Column<bool>(type: "bit", nullable: false),
-                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    isSeller = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Offers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(28)", maxLength: 28, nullable: false),
-                    Town = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    PricePerKG = table.Column<double>(type: "float", nullable: false),
-                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OfferTypeId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Offers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Offers_OfferTypes_OfferTypeId",
-                        column: x => x.OfferTypeId,
-                        principalTable: "OfferTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Offers_Users_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -127,6 +96,36 @@ namespace MarketAPI.Migrations
                     table.ForeignKey(
                         name: "FK_Stocks_Users_SellerId",
                         column: x => x.SellerId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Offers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(28)", maxLength: 28, nullable: false),
+                    Town = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    PricePerKG = table.Column<double>(type: "float", nullable: false),
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StockId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Offers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Offers_Stocks_StockId",
+                        column: x => x.StockId,
+                        principalTable: "Stocks",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Offers_Users_OwnerId",
+                        column: x => x.OwnerId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -169,14 +168,14 @@ namespace MarketAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Offers_OfferTypeId",
-                table: "Offers",
-                column: "OfferTypeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Offers_OwnerId",
                 table: "Offers",
                 column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Offers_StockId",
+                table: "Offers",
+                column: "StockId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_BuyerId",
@@ -216,10 +215,10 @@ namespace MarketAPI.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "Stocks");
+                name: "Offers");
 
             migrationBuilder.DropTable(
-                name: "Offers");
+                name: "Stocks");
 
             migrationBuilder.DropTable(
                 name: "OfferTypes");

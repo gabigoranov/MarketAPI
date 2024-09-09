@@ -45,7 +45,6 @@ namespace MarketAPI.Data.Models
 
         [Required]
         public string Town { get; set; }
-        public List<Offer> Offers { get; set; } = new List<Offer>();
 
         [Required]
         public bool isSeller { get; set; }

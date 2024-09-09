@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MarketAPI.Data.Models;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace MarketAPI.Data.Models
+namespace MarketAPI.Models
 {
-    public class Stock
+    public class StockViewModel
     {
+
         [Key]
         public int Id { get; set; }
         [Required]
@@ -12,15 +14,11 @@ namespace MarketAPI.Data.Models
         [Required]
         [ForeignKey(nameof(OfferType))]
         public int OfferTypeId { get; set; }
-        public OfferType OfferType { get; set; }
-        
+
         [Required]
         [ForeignKey(nameof(User))]
         public Guid SellerId { get; set; }
-        public User Seller { get; set; }
 
-        public List<Offer> Offers { get; set; }
-        
         [Required]
         public double Quantity { get; set; }
     }

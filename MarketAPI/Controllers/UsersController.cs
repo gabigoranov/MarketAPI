@@ -101,7 +101,7 @@ namespace MarketAPI.Controllers
             {
                 return BadRequest(userEdit);
             }
-            User user = await _context.Users.Include(x => x.Offers).SingleAsync(x => x.Id == userEdit.Id);
+            User user = await _context.Users.SingleAsync(x => x.Id == userEdit.Id);
             _context.Update(user);
 
             user.Age = userEdit.Age;

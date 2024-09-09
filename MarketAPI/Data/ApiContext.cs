@@ -23,6 +23,8 @@ namespace MarketAPI.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Offer>().HasOne(x => x.Stock).WithMany(x => x.Offers).HasForeignKey(x => x.StockId).IsRequired().OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<Order>(entity =>
             {
                 entity.HasOne(u => u.Buyer)
@@ -46,14 +48,15 @@ namespace MarketAPI.Data
             });
 
             builder.Entity<Offer>().HasOne(x => x.Owner).WithMany(x => x.Offers).OnDelete(DeleteBehavior.Cascade).IsRequired();
-            builder.Entity<Offer>().HasOne(x => x.OfferType);
             builder.Entity<Offer>().Navigation(x => x.Owner).AutoInclude(true);
-            
             builder.Entity<Offer>().Navigation(x => x.Orders).AutoInclude(true);
+
             
-            builder.Entity<User>().HasMany(x => x.Offers).WithOne(x => x.Owner).OnDelete(DeleteBehavior.Cascade);
             
-            builder.Entity<User>().Navigation(x => x.Offers).AutoInclude(true);
+            builder.Entity<Seller>().HasMany(x => x.Offers).WithOne(x => x.Owner).OnDelete(DeleteBehavior.Cascade);
+            
+            builder.Entity<Seller>().Navigation(x => x.Offers).AutoInclude(true);
+            builder.Entity<Seller>().Navigation(x => x.SoldOrders).AutoInclude(true); //
             
             builder.Entity<User>().Property(typeof(double), "Rating");
             builder.Entity<User>()

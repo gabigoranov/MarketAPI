@@ -44,26 +44,18 @@ namespace MarketAPI.Controllers
         [Route("add")]
         public async Task<IActionResult> Add(OfferViewModel offer)
         {
-            List<Offer> offers = await _service.GetAllAsync();
-            if (!offers.Any(x => x.Title == offer.Title && x.OwnerId == offer.OwnerId))
+            await _service.AddOffer(new Offer()
             {
-                await _service.AddOffer(new Offer()
-                {
-                    Title = offer.Title,
-                    Description = offer.Description,
-                    PricePerKG = offer.PricePerKG,
-                    OfferTypeId = offer.OfferTypeId,
-                    OwnerId = offer.OwnerId,
-                    Town = offer.Town,
-                    Owner = await _context.Users.FirstAsync(x => x.Id == offer.OwnerId),
-                    OfferType = await _context.OfferTypes.FirstAsync(x => x.Id == offer.OfferTypeId),
-                });
-                return Ok("Offer Added Succesfuly");
-            }
-            else
-            {
-                return BadRequest("Offer already in Database");
-            }
+                Title = offer.Title,
+                Description = offer.Description,
+                PricePerKG = offer.PricePerKG,
+                StockId = offer.StockId,
+                OwnerId = offer.OwnerId,
+                Town = offer.Town,
+                Owner = await _context.Sellers.FirstAsync(x => x.Id == offer.OwnerId),
+                Stock = await _context.Stocks.FirstAsync(x => x.Id == offer.StockId),
+            });
+            return Ok("Offer Added Succesfuly");
         }
 
         [HttpPost]

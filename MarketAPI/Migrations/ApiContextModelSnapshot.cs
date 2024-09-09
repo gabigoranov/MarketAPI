@@ -56,14 +56,14 @@ namespace MarketAPI.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
-                    b.Property<int>("OfferTypeId")
-                        .HasColumnType("int");
-
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("PricePerKG")
                         .HasColumnType("float");
+
+                    b.Property<int>("StockId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -77,9 +77,9 @@ namespace MarketAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OfferTypeId");
-
                     b.HasIndex("OwnerId");
+
+                    b.HasIndex("StockId");
 
                     b.ToTable("Offers");
                 });
@@ -260,21 +260,21 @@ namespace MarketAPI.Migrations
 
             modelBuilder.Entity("MarketAPI.Data.Models.Offer", b =>
                 {
-                    b.HasOne("MarketAPI.Data.Models.OfferType", "OfferType")
-                        .WithMany()
-                        .HasForeignKey("OfferTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MarketAPI.Data.Models.User", "Owner")
+                    b.HasOne("MarketAPI.Data.Models.Seller", "Owner")
                         .WithMany("Offers")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OfferType");
+                    b.HasOne("MarketAPI.Data.Models.Stock", "Stock")
+                        .WithMany()
+                        .HasForeignKey("StockId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Owner");
+
+                    b.Navigation("Stock");
                 });
 
             modelBuilder.Entity("MarketAPI.Data.Models.Order", b =>
@@ -331,12 +331,12 @@ namespace MarketAPI.Migrations
             modelBuilder.Entity("MarketAPI.Data.Models.User", b =>
                 {
                     b.Navigation("BoughtOrders");
-
-                    b.Navigation("Offers");
                 });
 
             modelBuilder.Entity("MarketAPI.Data.Models.Seller", b =>
                 {
+                    b.Navigation("Offers");
+
                     b.Navigation("SoldOrders");
                 });
 #pragma warning restore 612, 618

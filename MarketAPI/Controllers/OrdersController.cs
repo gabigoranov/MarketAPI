@@ -43,6 +43,9 @@ namespace MarketAPI.Controllers
             };
 
             await _ordersService.AddOrderAsync(order);
+            _context.Stocks.FirstAsync(x => x.Id == order.Offer.StockId).Result.Quantity -= order.Quantity;
+            await _context.SaveChangesAsync();
+
             return Ok("Order added succesfully");
         }
     }

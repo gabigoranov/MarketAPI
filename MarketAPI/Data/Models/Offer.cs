@@ -26,13 +26,13 @@ namespace MarketAPI.Data.Models
         [Required]
         [ForeignKey(nameof(User))]
         public Guid OwnerId { get; set; }
-        public User Owner { get; set; }
+        public Seller Owner { get; set; }
 
         [Required]
-        [ForeignKey(nameof(OfferType))]
-        public int OfferTypeId { get; set; }
-
-        public OfferType OfferType { get; set; }
+        [ForeignKey(nameof(Stock))]
+        public int StockId { get; set; }
+        
+        public Stock Stock { get; set; }
 
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 

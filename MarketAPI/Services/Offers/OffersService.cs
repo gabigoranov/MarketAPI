@@ -31,7 +31,7 @@ namespace MarketAPI.Services.Offers
 
             offer.Title = offerEdit.Title;
             offer.PricePerKG = offerEdit.PricePerKG;
-            offer.OfferTypeId = offerEdit.OfferTypeId;
+            offer.StockId = offerEdit.StockId;
             offer.Description = offerEdit.Description;
 
             _context.Entry(offer).State = EntityState.Modified;
