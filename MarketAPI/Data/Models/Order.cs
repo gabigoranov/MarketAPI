@@ -9,6 +9,12 @@ namespace MarketAPI.Data.Models
         [Key]
         public int Id { get; set; }
         [Required]
+        public string Title { get; set; }
+
+        [Required]
+        public bool IsApproved { get; set; }
+
+        [Required]
         public double Quantity { get; set; }
         [Required]
         public double Price { get; set; }
@@ -25,6 +31,9 @@ namespace MarketAPI.Data.Models
 
         public Guid? SellerId { get; set; }
         public Seller Seller { get; set; }
+
+        [Required]
+        public DateTime DateOrdered { get; set; }
 
     }
 }

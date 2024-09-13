@@ -9,6 +9,9 @@ namespace MarketAPI.Models
         public int OfferId { get; set; }
 
         [Required]
+        public string Title { get; set; }
+
+        [Required]
         public Guid BuyerId { get; set; }
 
         [Required]

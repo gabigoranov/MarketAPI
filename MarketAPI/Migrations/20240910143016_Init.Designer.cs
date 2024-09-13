@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20240909094236_Init")]
+    [Migration("20240910143016_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,6 +52,9 @@ namespace MarketAPI.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("DatePosted")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -118,6 +121,9 @@ namespace MarketAPI.Migrations
                     b.Property<Guid?>("BuyerId")
                         .IsRequired()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DateOrdered")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("OfferId")
                         .HasColumnType("int");
@@ -269,7 +275,7 @@ namespace MarketAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("MarketAPI.Data.Models.Stock", "Stock")
-                        .WithMany()
+                        .WithMany("Offers")
                         .HasForeignKey("StockId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -328,6 +334,11 @@ namespace MarketAPI.Migrations
             modelBuilder.Entity("MarketAPI.Data.Models.Offer", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("MarketAPI.Data.Models.Stock", b =>
+                {
+                    b.Navigation("Offers");
                 });
 
             modelBuilder.Entity("MarketAPI.Data.Models.User", b =>

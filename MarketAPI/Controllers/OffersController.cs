@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using MarketAPI.Services.Offers;
 using MarketAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using MarketAPI.Hubs;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MarketAPI.Controllers
 {
@@ -25,7 +27,6 @@ namespace MarketAPI.Controllers
         public async Task<IActionResult> GetAll()
         {
             List<Offer> products = await _service.GetAllAsync();
-
 
             return Ok(products);
         }
@@ -54,6 +55,7 @@ namespace MarketAPI.Controllers
                 Town = offer.Town,
                 Owner = await _context.Sellers.FirstAsync(x => x.Id == offer.OwnerId),
                 Stock = await _context.Stocks.FirstAsync(x => x.Id == offer.StockId),
+                DatePosted = DateTime.Now,
             });
             return Ok("Offer Added Succesfuly");
         }

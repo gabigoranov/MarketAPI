@@ -3,6 +3,7 @@ using MarketAPI.Data.Models;
 using MarketAPI.Models;
 using MarketAPI.Services.Orders;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace MarketAPI.Controllers
@@ -40,6 +41,9 @@ namespace MarketAPI.Controllers
                 OfferId = model.OfferId,
                 Offer = await _context.Offers.FirstAsync(x => x.Id == model.OfferId),
                 Quantity = model.Quantity,
+                Title = model.Title,
+                IsApproved = false,
+                DateOrdered = DateTime.Now,
             };
 
             await _ordersService.AddOrderAsync(order);
@@ -47,6 +51,24 @@ namespace MarketAPI.Controllers
             await _context.SaveChangesAsync();
 
             return Ok("Order added succesfully");
+        }
+
+        [HttpGet]
+        [Route("accept")]
+        public async Task<IActionResult> Accept(int id)
+        {
+            _context.Orders.First(x => x.Id == id).IsApproved = true;
+            await _context.SaveChangesAsync();
+            return Ok("Approved order succesfully");
+        }
+
+        [HttpGet]
+        [Route("decline")]
+        public async Task<IActionResult> Decline(int id)
+        {
+            _context.Orders.Remove(_context.Orders.First(x => x.Id == id));
+            await _context.SaveChangesAsync();
+            return Ok("Declined order");
         }
     }
 }

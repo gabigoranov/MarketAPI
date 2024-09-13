@@ -34,6 +34,9 @@ namespace MarketAPI.Data.Models
         
         public Stock Stock { get; set; }
 
+        [Required]
+        public DateTime DatePosted { get; set; }
+
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
 

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Hosting;
 using MarketAPI.Services.Orders;
+using MarketAPI.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,13 +30,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
+    options.AddPolicy("CorsPolicy",
             builder =>
             {
-                builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
+                builder.AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials();
             });
 });
 
@@ -50,7 +50,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAll");
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 

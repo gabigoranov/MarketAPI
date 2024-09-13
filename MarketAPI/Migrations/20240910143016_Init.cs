@@ -112,7 +112,8 @@ namespace MarketAPI.Migrations
                     Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
                     PricePerKG = table.Column<double>(type: "float", nullable: false),
                     OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StockId = table.Column<int>(type: "int", nullable: false)
+                    StockId = table.Column<int>(type: "int", nullable: false),
+                    DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -142,7 +143,8 @@ namespace MarketAPI.Migrations
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OfferId = table.Column<int>(type: "int", nullable: false),
                     BuyerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SellerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    SellerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DateOrdered = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

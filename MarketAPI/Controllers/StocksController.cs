@@ -18,7 +18,7 @@ namespace MarketAPI.Controllers
 
         [Route("add")]
         [HttpPost]
-        public async Task<IActionResult> Add(StockViewModel model)
+        public async Task<IActionResult> Add([FromBody] StockViewModel model)
         {
             Stock stock = new Stock()
             {
@@ -32,20 +32,28 @@ namespace MarketAPI.Controllers
             return Ok("Stock added succesfully");
         }
 
-        [Route("up")]
-        [HttpPost]
-        public async Task<IActionResult> Up(int stockId, double quantity)
+        [Route("get")]
+        [HttpGet]
+        public async Task<IActionResult> GetUserStocks(Guid sellerId)
         {
-            _context.Stocks.First(x => x.Id ==stockId).Quantity += quantity;
+            List<Stock> stocks = _context.Stocks.Where(x => x.SellerId == sellerId).ToList();
+            return Ok(stocks);
+        }
+
+        [Route("up")]
+        [HttpGet]
+        public async Task<IActionResult> Up(int id, double quantity)
+        {
+            _context.Stocks.First(x => x.Id ==id).Quantity += quantity;
             await _context.SaveChangesAsync();
             return Ok("Stock increased succesfully");
         }
 
         [Route("down")]
-        [HttpPost]
-        public async Task<IActionResult> Down(int stockId, double quantity)
+        [HttpGet]
+        public async Task<IActionResult> Down(int id, double quantity)
         {
-            var stock = _context.Stocks.First(x => x.Id == stockId);
+            var stock = _context.Stocks.First(x => x.Id == id);
             _context.Update(stock);
             stock.Quantity -= quantity;
             if (stock.Quantity < 0) stock.Quantity = 0;
@@ -57,6 +65,7 @@ namespace MarketAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int stockId)
         {
+            _context.Offers.RemoveRange(_context.Offers.Where(x => x.StockId == stockId).ToList()); 
             _context.Stocks.Remove(_context.Stocks.First(x => x.Id == stockId));
             await _context.SaveChangesAsync();
             return Ok("Stock deleted succesfully");
