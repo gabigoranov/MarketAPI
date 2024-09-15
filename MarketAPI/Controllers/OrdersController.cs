@@ -21,6 +21,15 @@ namespace MarketAPI.Controllers
             _context = context;
         }
 
+        [HttpGet]
+        [Route("getall")]
+        //for testing only
+        public async Task<IActionResult> GetAllOrders()
+        {
+            List<Order> orders = await _context.Orders.ToListAsync();
+            return Ok(orders);
+        }
+
         [HttpPost]
         [Route("add")]
         public async Task<IActionResult> Add(OrderViewModel model)
@@ -55,9 +64,13 @@ namespace MarketAPI.Controllers
 
         [HttpGet]
         [Route("accept")]
+        //seller accepts order and stock is decreased
         public async Task<IActionResult> Accept(int id)
         {
-            _context.Orders.First(x => x.Id == id).IsApproved = true;
+            Order order = _context.Orders.Include(x => x.Offer).First(x => x.Id == id);
+            _context.Update(order);
+            order.IsApproved = true;
+            _context.Stocks.Single(x => x.Id == order.Offer.StockId).Quantity -= order.Quantity;
             await _context.SaveChangesAsync();
             return Ok("Approved order succesfully");
         }
