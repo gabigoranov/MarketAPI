@@ -23,6 +23,8 @@ namespace MarketAPI.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Offer>().HasMany(x => x.Reviews).WithOne(x => x.Offer).HasForeignKey(x => x.OfferId).OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<Offer>().HasOne(x => x.Stock).WithMany(x => x.Offers).HasForeignKey(x => x.StockId).IsRequired().OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<Order>(entity =>
@@ -48,11 +50,11 @@ namespace MarketAPI.Data
             });
 
             builder.Entity<Offer>().HasOne(x => x.Owner).WithMany(x => x.Offers).OnDelete(DeleteBehavior.Cascade).IsRequired();
-            builder.Entity<Offer>().Navigation(x => x.Owner).AutoInclude(true);
-            builder.Entity<Offer>().Navigation(x => x.Orders).AutoInclude(true);
+            builder.Entity<Offer>().Navigation(x => x.Owner);
             builder.Entity<Offer>().Navigation(x => x.Stock).AutoInclude(true);
+            builder.Entity<Offer>().Navigation(x => x.Reviews).AutoInclude(true);
 
-            
+
             
             builder.Entity<Seller>().HasMany(x => x.Offers).WithOne(x => x.Owner).OnDelete(DeleteBehavior.Cascade);
             

@@ -4,6 +4,7 @@ using MarketAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20240923104402_updatedOrder")]
+    partial class updatedOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,26 +172,18 @@ namespace MarketAPI.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OfferId")
+                    b.Property<int>("Offer")
                         .HasColumnType("int");
 
                     b.Property<double>("Rating")
                         .HasColumnType("float");
 
-                    b.HasKey("Id");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("OfferId");
+                    b.HasKey("Id");
 
                     b.ToTable("Reviews");
                 });
@@ -331,17 +325,6 @@ namespace MarketAPI.Migrations
                     b.Navigation("Seller");
                 });
 
-            modelBuilder.Entity("MarketAPI.Data.Models.Review", b =>
-                {
-                    b.HasOne("MarketAPI.Data.Models.Offer", "Offer")
-                        .WithMany("Reviews")
-                        .HasForeignKey("OfferId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Offer");
-                });
-
             modelBuilder.Entity("MarketAPI.Data.Models.Stock", b =>
                 {
                     b.HasOne("MarketAPI.Data.Models.OfferType", "OfferType")
@@ -364,8 +347,6 @@ namespace MarketAPI.Migrations
             modelBuilder.Entity("MarketAPI.Data.Models.Offer", b =>
                 {
                     b.Navigation("Orders");
-
-                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("MarketAPI.Data.Models.Stock", b =>

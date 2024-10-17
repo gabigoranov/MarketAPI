@@ -83,5 +83,17 @@ namespace MarketAPI.Controllers
             await _context.SaveChangesAsync();
             return Ok("Declined order");
         }
+
+        [HttpGet]
+        [Route("deliver")]
+        public async Task<IActionResult> Deliver(int id)
+        {
+            Order order = _context.Orders.Single(x => x.Id == id);
+            _context.Update(order);
+            order.IsDelivered = true;   
+            order.DateDelivered = DateTime.Now;
+            await _context.SaveChangesAsync();
+            return Ok("Order delivered succesfully");
+        }
     }
 }

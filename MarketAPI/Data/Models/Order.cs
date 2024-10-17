@@ -21,6 +21,8 @@ namespace MarketAPI.Data.Models
         [Required]
         public string Address { get; set; }
 
+        public bool IsDelivered { get; set; } = false;
+
         [Required]
         [ForeignKey(nameof(Offer))]
         public int OfferId { get; set; }
@@ -34,6 +36,8 @@ namespace MarketAPI.Data.Models
 
         [Required]
         public DateTime DateOrdered { get; set; }
+
+        public DateTime? DateDelivered { get; set; } = null;
 
     }
 }

@@ -1,25 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations;
+﻿using MarketAPI.Data.Models;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace MarketAPI.Data.Models
+namespace MarketAPI.Models
 {
-    public class Review
+    public class ReviewViewModel
     {
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        public string FirstName { get; set; }
-
-        [Required]
-        public string LastName { get; set; }
 
         [Required]
         [ForeignKey(nameof(Offer))]
         public int OfferId { get; set; }
-
-        public virtual Offer Offer { get; set; }
 
         [Required]
         [StringLength(250)]
@@ -28,5 +21,9 @@ namespace MarketAPI.Data.Models
         [Required]
         [Range(0, 5)]
         public double Rating { get; set; }
+        [Required]
+        public string FirstName { get; set; }
+        [Required]
+        public string LastName { get; set; }
     }
 }

@@ -40,7 +40,7 @@ namespace MarketAPI.Services.Offers
 
         public async Task<List<Offer>> GetAllAsync()
         {
-            return await _context.Offers.Take(500).ToListAsync(); //??? .Include(x => x.Owner).
+            return await _context.Offers.Include(x => x.Reviews).Take(500).ToListAsync(); //??? .Include(x => x.Owner).
         }
 
         public async Task<List<Offer>> SearchAsync(string input, string town)
