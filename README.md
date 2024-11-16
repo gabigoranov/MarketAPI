@@ -6,7 +6,8 @@
 
 <h1>Съдържание</h1>
 
-![uml-diagram](https://github.com/user-attachments/assets/5b63d888-4452-4320-8146-32e175447fa5)
+  ![diagram](https://github.com/user-attachments/assets/01945fb3-c195-44ac-90cc-58274a14e8e8)
+
 
 
 
