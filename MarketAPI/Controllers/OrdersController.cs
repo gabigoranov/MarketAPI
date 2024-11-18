@@ -45,7 +45,6 @@ namespace MarketAPI.Controllers
             Order order = new Order()
             {
                 Address = model.Address,
-                IsApproved = false,
                 DateOrdered = DateTime.UtcNow,
                 SellerId = model.SellerId,
                 Title = model.Title,
@@ -66,12 +65,19 @@ namespace MarketAPI.Controllers
         //seller accepts order and stock is decreased
         public async Task<IActionResult> Accept(int id)
         {
-            Order order = _context.Orders.Include(x => x.Offer).First(x => x.Id == id);
+            Order order = _context.Orders.Include(x => x.Offer).Include(x => x.Buyer).First(x => x.Id == id);
             _context.Update(order);
-            order.IsApproved = true;
+            order.IsAccepted = true;
             _context.Stocks.Single(x => x.Id == order.Offer.StockId).Quantity -= order.Quantity;
-
             await _context.SaveChangesAsync();
+
+            string? userToken = order.Buyer.FirebaseToken;
+
+            if (!string.IsNullOrEmpty(userToken))
+            {
+                await _firebaseService.SendNotification(userToken, "Order Accepted", "You can expect a delivery.", id);
+            }
+
             return Ok("Approved purchase succesfully");
         }
 
@@ -79,10 +85,18 @@ namespace MarketAPI.Controllers
         [Route("decline")]
         public async Task<IActionResult> Decline(int id)
         {
-            Order order = _context.Orders.Include(x => x.Offer).First(x => x.Id == id);
-            _context.Orders.Remove(order);
-            _context.Stocks.Single(x => x.Id == order.Offer.StockId).Quantity -= order.Quantity;
+            Order order = _context.Orders.Include(x => x.Offer).Include(x => x.Buyer).First(x => x.Id == id);
+            _context.Update(order);
+            order.IsDenied = true;
             await _context.SaveChangesAsync();
+
+            string? userToken = order.Buyer.FirebaseToken;
+
+            if (!string.IsNullOrEmpty(userToken))
+            {
+                await _firebaseService.SendNotification(userToken, "Order Declined", "One of your orders has been declined.", id);
+            }
+
             return Ok("Declined purchase successfully");
         }
 

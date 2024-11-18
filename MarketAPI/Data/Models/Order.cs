@@ -11,8 +11,9 @@ namespace MarketAPI.Data.Models
         [Required]
         public string Title { get; set; }
 
-        [Required]
-        public bool IsApproved { get; set; }
+        public bool IsAccepted { get; set; } = false;
+
+        public bool IsDenied { get; set; } = false;
 
         [Required]
         public double Quantity { get; set; }

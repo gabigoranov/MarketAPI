@@ -29,7 +29,7 @@ namespace MarketAPI.Services.Orders
                 DateOrdered = DateTime.Now,
                 IsDelivered = false,
                 Address = model.Address,
-                IsApproved = false,
+                IsAccepted = false,
                 Title = model.Title,
             };
 
