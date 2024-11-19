@@ -6,6 +6,7 @@
 
 <h1>Съдържание</h1>
 
+![diagram](https://github.com/user-attachments/assets/fa04de9b-49db-4bc6-97b3-b478848cad22)
 
 
 
