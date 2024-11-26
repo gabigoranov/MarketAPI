@@ -11,24 +11,20 @@ namespace MarketAPI.Data.Models
         [Key]
         public Guid Id { get; set; }
 
-        [Required]
         [StringLength(12)]
-        public string FirstName { get; set; }
+        public virtual string? FirstName { get; set; }
 
-        [Required]
         [StringLength(12)]
-        public string LastName { get; set; }
+        public virtual string? LastName { get; set; }
 
-        [Required]
-        public int Age { get; set; }
+        public virtual int? Age { get; set; }
 
 
         [Required]
         [EmailAddress]
         public string Email { get; set; }
 
-        [Required]
-        public double Rating { get; set; } = 0.0;
+        
 
         [Required]
         [Phone]
@@ -47,7 +43,7 @@ namespace MarketAPI.Data.Models
         public string Town { get; set; }
 
         [Required]
-        public bool isSeller { get; set; }
+        public int Discriminator { get; set; }
 
         public string? FirebaseToken { get; set; }
 

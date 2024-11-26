@@ -30,6 +30,18 @@ namespace MarketAPI.Controllers
         }
 
         [HttpGet]
+        [Route("single")]
+        public async Task<IActionResult> Single(int id)
+        {
+            Offer? offer = await _service.SingleAsync(id);
+            if(offer == null)
+            {
+                return NotFound("Offer does not exist");
+            }
+            return Ok(offer);
+        }
+
+        [HttpGet]
         [Route("search")]
         public async Task<IActionResult> Search(string input, string prefferedTown)
         {

@@ -13,5 +13,6 @@ namespace MarketAPI.Services.Offers
         Task<List<Offer>> SearchWithCategoryAsync(string town, string category);
 
         Task EditAsync(OfferViewModel offerEdit);
+        Task<Offer?> SingleAsync(int id);
     }
 }

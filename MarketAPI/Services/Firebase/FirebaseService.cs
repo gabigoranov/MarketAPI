@@ -18,7 +18,7 @@ namespace MarketAPI.Services.Firebase
 
         }
 
-        public async Task SendNotification(string deviceToken, string title, string body, int id)
+        public async Task SendNotification(string deviceToken, string title, string body, int id, string status)
         {
             var message = new Message()
             {
@@ -31,7 +31,7 @@ namespace MarketAPI.Services.Firebase
                 Data = new Dictionary<string, string>
                 {
                     { "id", id.ToString() },
-                    { "status", "delivered" },
+                    { "status", status },
                     { "type", "orderUpdate" }
                 }
             };

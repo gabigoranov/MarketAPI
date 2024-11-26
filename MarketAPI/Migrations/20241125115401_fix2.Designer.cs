@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20241115195754_Init")]
-    partial class Init
+    [Migration("20241125115401_fix2")]
+    partial class fix2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -111,10 +111,13 @@ namespace MarketAPI.Migrations
                     b.Property<DateTime>("DateOrdered")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsApproved")
+                    b.Property<bool>("IsAccepted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsDelivered")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDenied")
                         .HasColumnType("bit");
 
                     b.Property<int>("OfferId")
@@ -269,6 +272,9 @@ namespace MarketAPI.Migrations
                         .HasMaxLength(220)
                         .HasColumnType("nvarchar(220)");
 
+                    b.Property<int>("Discriminator")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -286,6 +292,9 @@ namespace MarketAPI.Migrations
                         .HasMaxLength(12)
                         .HasColumnType("nvarchar(12)");
 
+                    b.Property<string>("OrganizationName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(24)
@@ -295,28 +304,32 @@ namespace MarketAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Rating")
-                        .HasColumnType("float");
-
                     b.Property<string>("Town")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isSeller")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
                     b.ToTable("Users");
 
-                    b.HasDiscriminator<bool>("isSeller").HasValue(false);
+                    b.HasDiscriminator<int>("Discriminator").HasValue(0);
+                });
+
+            modelBuilder.Entity("MarketAPI.Data.Models.Organization", b =>
+                {
+                    b.HasBaseType("MarketAPI.Data.Models.User");
+
+                    b.HasDiscriminator().HasValue(2);
                 });
 
             modelBuilder.Entity("MarketAPI.Data.Models.Seller", b =>
                 {
                     b.HasBaseType("MarketAPI.Data.Models.User");
 
-                    b.HasDiscriminator().HasValue(true);
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.HasDiscriminator().HasValue(1);
                 });
 
             modelBuilder.Entity("MarketAPI.Data.Models.Offer", b =>
@@ -349,7 +362,7 @@ namespace MarketAPI.Migrations
                     b.HasOne("MarketAPI.Data.Models.Offer", "Offer")
                         .WithMany("Orders")
                         .HasForeignKey("OfferId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MarketAPI.Data.Models.Purchase", null)

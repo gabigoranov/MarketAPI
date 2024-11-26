@@ -25,17 +25,22 @@ namespace MarketAPI.Controllers
         [Route("login")]
         public IActionResult Login(string email, string password)
         {
-            bool isSeller = _context.Users.FirstOrDefault(u => u.Email == email && u.Password == password).isSeller;
-            if (isSeller != null)
+            int? discriminator = _context.Users.FirstOrDefault(u => u.Email == email && u.Password == password)?.Discriminator;
+            if (discriminator != null)
             {
-                if (isSeller)
+                if (discriminator == 1)
                 {
                     Seller? user = _context.Sellers.Include(x => x.Offers).Include(x => x.SoldOrders).FirstOrDefault(u => u.Email == email && u.Password == password);
                     return Ok(user);
                 }
-                else
+                else if(discriminator == 0)
                 {
                     User? user = _context.Users.Include(x => x.BoughtPurchases).Include(x => x.BoughtOrders).FirstOrDefault(u => u.Email == email && u.Password == password);
+                    return Ok(user);
+                }
+                else if (discriminator == 2)
+                {
+                    Organization? user = _context.Organizations.Include(x => x.BoughtOrders).FirstOrDefault(u => u.Email == email && u.Password == password);
                     return Ok(user);
                 }
             }
@@ -47,17 +52,22 @@ namespace MarketAPI.Controllers
         [Route("getWithId")]
         public IActionResult getWithId(Guid id)
         {
-            bool isSeller = _context.Users.FirstOrDefault(u => u.Id == id).isSeller;
-            if (isSeller != null)
+            int? discriminator = _context.Users.FirstOrDefault(u => u.Id == id)?.Discriminator;
+            if (discriminator != null)
             {
-                if (isSeller)
+                if (discriminator == 1)
                 {
                     Seller? user = _context.Sellers.Include(x => x.Offers).Include(x => x.SoldOrders).FirstOrDefault(u => u.Id == id);
                     return Ok(user);
                 }
-                else
+                else if (discriminator == 0)
                 {
                     User? user = _context.Users.Include(x => x.BoughtOrders).FirstOrDefault(u => u.Id == id);
+                    return Ok(user);
+                }
+                else if (discriminator == 2)
+                {
+                    Organization? user = _context.Organizations.Include(x => x.BoughtOrders).FirstOrDefault(u => u.Id == id);
                     return Ok(user);
                 }
             }
@@ -67,25 +77,58 @@ namespace MarketAPI.Controllers
 
         [HttpPost]
         [Route("add")]
-        public IActionResult AddUser(User user)
+        public IActionResult AddUser(AddUserViewModel user)
         {
             if (!_context.Users.Any(u => u.Email == user.Email))
             {
-                _context.Users.Add(new User() //
+                if(user.Discriminator == 0)
                 {
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email, 
-                    PhoneNumber = user.PhoneNumber,
-                    Age = user.Age,
-                    Description = user.Description,
-                    Password = user.Password,
-                    Rating = 0.0,
-                    Town = user.Town,
-                    isSeller = user.isSeller,
-                });
+                    _context.Users.Add(new User() //
+                    {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber,
+                        Age = user.Age,
+                        Description = user.Description,
+                        Password = user.Password,
+                        Town = user.Town,
+                        Discriminator = user.Discriminator,
+                    });
+                }
+                else if(user.Discriminator == 1)
+                {
+                    _context.Sellers.Add(new Seller() //
+                    {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber,
+                        Age = user.Age,
+                        Description = user.Description,
+                        Password = user.Password,
+                        Town = user.Town,
+                        Discriminator = user.Discriminator,
+                    });
+                }
+                else if(user.Discriminator == 2)
+                {
+                    Organization organization = new Organization()
+                    {
+                        Email = user.Email,
+                        PhoneNumber = user.PhoneNumber,
+                        Description = user.Description,
+                        Password = user.Password,
+                        Town = user.Town,
+                        Discriminator = user.Discriminator,
+                        OrganizationName = user.OrganizationName!
+                    };
+
+                    _context.Organizations.Add(organization);
+                }
                 _context.SaveChanges();
-                return Ok($"User: {user.FirstName} added to Database");
+                string name = user.Discriminator! != 2 ? user.FirstName! : user.OrganizationName!;
+                return Ok($"User: {name} added to Database");
             }
             else
             {
@@ -95,25 +138,60 @@ namespace MarketAPI.Controllers
 
         [HttpPost]
         [Route("edit")]
-        public async Task<IActionResult> EditUser(User userEdit)
+        public async Task<IActionResult> EditUser(AddUserViewModel userEdit)
         {
             if(!ModelState.IsValid)
             {
                 return BadRequest(userEdit);
             }
-            User user = await _context.Users.SingleAsync(x => x.Id == userEdit.Id);
-            _context.Update(user);
 
-            user.Age = userEdit.Age;
-            user.PhoneNumber = userEdit.PhoneNumber;
-            user.Email = userEdit.Email;
-            user.FirstName = userEdit.FirstName;    
-            user.LastName = userEdit.LastName;
-            user.Description = userEdit.Description; //fix
-            user.Town = userEdit.Town;
-            user.Password = userEdit.Password;
+            if(userEdit.Discriminator == 0)
+            {
+                User user = await _context.Users.SingleAsync(x => x.Id == userEdit.Id);
+                _context.Update(user);
 
-            _context.Entry(user).State = EntityState.Modified;
+                user.Age = userEdit.Age;
+                user.PhoneNumber = userEdit.PhoneNumber;
+                user.Email = userEdit.Email;
+                user.FirstName = userEdit.FirstName;
+                user.LastName = userEdit.LastName;
+                user.Description = userEdit.Description; 
+                user.Town = userEdit.Town;
+                user.Password = userEdit.Password;
+                _context.Entry(user).State = EntityState.Modified;
+
+            }
+            else if(userEdit.Discriminator == 1)
+            {
+                Seller user = await _context.Sellers.SingleAsync(x => x.Id == userEdit.Id);
+                _context.Update(user);
+
+                user.Age = userEdit.Age;
+                user.PhoneNumber = userEdit.PhoneNumber;
+                user.Email = userEdit.Email;
+                user.FirstName = userEdit.FirstName;
+                user.LastName = userEdit.LastName;
+                user.Description = userEdit.Description; 
+                user.Town = userEdit.Town;
+                user.Password = userEdit.Password;
+                _context.Entry(user).State = EntityState.Modified;
+
+            }
+            else if (userEdit.Discriminator == 2)
+            {
+                Organization user = await _context.Organizations.SingleAsync(x => x.Id == userEdit.Id);
+                _context.Update(user);
+
+                user.PhoneNumber = userEdit.PhoneNumber;
+                user.Email = userEdit.Email;
+                user.Description = userEdit.Description; 
+                user.Town = userEdit.Town;
+                user.Password = userEdit.Password;
+                user.OrganizationName = userEdit.OrganizationName!;
+                _context.Entry(user).State = EntityState.Modified;
+
+            }
+
             _context.SaveChanges();
 
             return Ok("Edited Succesfully");    

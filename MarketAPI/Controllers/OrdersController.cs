@@ -5,6 +5,7 @@ using MarketAPI.Services.Firebase;
 using MarketAPI.Services.Orders;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace MarketAPI.Controllers
 {
@@ -75,7 +76,16 @@ namespace MarketAPI.Controllers
 
             if (!string.IsNullOrEmpty(userToken))
             {
-                await _firebaseService.SendNotification(userToken, "Order Accepted", "You can expect a delivery.", id);
+                try
+                {
+                    await _firebaseService.SendNotification(userToken, "Order Accepted", "You can expect a delivery.", id, "accepted");
+                }
+                catch(Exception ex) 
+                {
+                    Debug.WriteLine(ex.Message);
+                    return Ok("Approved purchase succesfully");
+                    
+                }
             }
 
             return Ok("Approved purchase succesfully");
@@ -94,7 +104,16 @@ namespace MarketAPI.Controllers
 
             if (!string.IsNullOrEmpty(userToken))
             {
-                await _firebaseService.SendNotification(userToken, "Order Declined", "One of your orders has been declined.", id);
+                try
+                {
+                    await _firebaseService.SendNotification(userToken, "Order Declined", "One of your orders has been declined.", id, "declined");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    return Ok("Approved purchase succesfully");
+
+                }
             }
 
             return Ok("Declined purchase successfully");
@@ -114,7 +133,16 @@ namespace MarketAPI.Controllers
 
             if (!string.IsNullOrEmpty(userToken))
             {
-                await _firebaseService.SendNotification(userToken, "Order Delivered", "Your order has been successfully delivered!", id);
+                try
+                {
+                    await _firebaseService.SendNotification(userToken, "Order Delivered", "Your order has been successfully delivered!", id, "delivered");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    return Ok("Approved purchase succesfully");
+
+                }
             }
 
             return Ok("Purchase delivered succesfully");

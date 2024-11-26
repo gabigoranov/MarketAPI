@@ -3,21 +3,18 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MarketAPI.Models
 {
-    public class UserViewModel
+    public class AddUserViewModel
     {
         [Key]
         public Guid Id { get; set; }
 
-        [Required]
         [StringLength(12)]
-        public virtual string FirstName { get; set; }
+        public virtual string? FirstName { get; set; }
 
-        [Required]
         [StringLength(12)]
-        public virtual string LastName { get; set; }
+        public virtual string? LastName { get; set; }
 
-        [Required]
-        public virtual int Age { get; set; }
+        public virtual int? Age { get; set; }
 
 
         [Required]
@@ -45,14 +42,7 @@ namespace MarketAPI.Models
         [Required]
         public int Discriminator { get; set; }
 
-        [Required]
-        public bool isOrganization { get; set; }
-
-        public string? FirebaseToken { get; set; }
-
-        public ICollection<Purchase> BoughtPurchases { get; set; } = new List<Purchase>();
-        public ICollection<Order> BoughtOrders { get; set; } = new List<Order>();
-
+        public string? OrganizationName { get; set; }
 
     }
 }

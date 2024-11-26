@@ -65,5 +65,12 @@ namespace MarketAPI.Services.Offers
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Offer?> SingleAsync(int id)
+        {
+            Offer? offer = await _context.Offers.SingleOrDefaultAsync(x => x.Id == id);
+            if (offer != null) return offer;
+            else return null;
+        }
     }
 }

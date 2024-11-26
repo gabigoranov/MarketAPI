@@ -19,6 +19,7 @@ namespace MarketAPI.Data
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Seller> Sellers { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
         public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -48,7 +49,7 @@ namespace MarketAPI.Data
                     .WithMany(u => u.Orders)
                     .HasForeignKey(n => n.OfferId)
                     .IsRequired()
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
 
             });
 
@@ -65,14 +66,12 @@ namespace MarketAPI.Data
             
             builder.Entity<Seller>().Navigation(x => x.Offers).AutoInclude(true);
             builder.Entity<Seller>().Navigation(x => x.SoldOrders).AutoInclude(true); //
-            
-            builder.Entity<User>().Property(typeof(double), "Rating");
-            builder.Entity<User>()
-                .HasDiscriminator<bool>(x => x.isSeller)
-                .HasValue<User>(false)
-                .HasValue<Seller>(true);
 
-            
+            builder.Entity<User>()
+                .HasDiscriminator<int>(x => x.Discriminator)
+                .HasValue<User>(0)
+                .HasValue<Seller>(1)
+                .HasValue<Organization>(2);
 
             base.OnModelCreating(builder);
         }
