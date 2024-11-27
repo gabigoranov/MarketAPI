@@ -40,8 +40,8 @@ namespace MarketAPI.Data.Models
 
         public DateTime? DateDelivered { get; set; } = null;
 
-        [Required]
-        public int OfferTypeId { get; set; }
+        //[Required]
+        //public int OfferTypeId { get; set; }
 
     }
 }

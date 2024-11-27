@@ -52,7 +52,6 @@ namespace MarketAPI.Controllers
                 BuyerId = model.BuyerId,
                 Price = model.Price,
                 OfferId = model.OfferId,
-                OfferTypeId = model.OfferTypeId,
             };
 
             await _context.Orders.AddAsync(order);

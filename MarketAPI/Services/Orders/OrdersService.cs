@@ -25,7 +25,6 @@ namespace MarketAPI.Services.Orders
                 OfferId = model.OfferId,
                 Offer = await _context.Offers.FirstAsync(x => x.Id == model.OfferId),
                 Quantity = model.Quantity,
-                OfferTypeId = model.OfferTypeId,
                 DateOrdered = DateTime.Now,
                 IsDelivered = false,
                 Address = model.Address,
