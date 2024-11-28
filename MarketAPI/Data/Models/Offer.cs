@@ -40,6 +40,10 @@ namespace MarketAPI.Data.Models
         [Required]
         public DateTime DatePosted { get; set; }
 
+        [Required]
+        [Range(minimum: 5, maximum: 20)]
+        public int Discount { get; set; }
+
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
         public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();

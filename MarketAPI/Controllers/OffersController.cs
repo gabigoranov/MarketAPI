@@ -76,6 +76,7 @@ namespace MarketAPI.Controllers
                 Owner = await _context.Sellers.FirstAsync(x => x.Id == offer.OwnerId),
                 Stock = await _context.Stocks.FirstAsync(x => x.Id == offer.StockId),
                 DatePosted = DateTime.Now,
+                Discount = offer.Discount,
             });
             return Ok("Offer Added Succesfuly");
         }

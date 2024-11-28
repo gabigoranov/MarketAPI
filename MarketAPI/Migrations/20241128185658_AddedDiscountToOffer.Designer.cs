@@ -4,6 +4,7 @@ using MarketAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MarketAPI.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20241128185658_AddedDiscountToOffer")]
+    partial class AddedDiscountToOffer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -322,6 +324,9 @@ namespace MarketAPI.Migrations
             modelBuilder.Entity("MarketAPI.Data.Models.Seller", b =>
                 {
                     b.HasBaseType("MarketAPI.Data.Models.User");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
 
                     b.HasDiscriminator().HasValue(1);
                 });
