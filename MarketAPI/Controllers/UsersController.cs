@@ -231,5 +231,14 @@ namespace MarketAPI.Controllers
             return Ok("Deleted Succesfully");
         }
 
+        [HttpGet]
+        [Route("history")]
+        public async Task<IActionResult> History(Guid id)
+        {
+            if (!_context.Users.Any(x => x.Id == id)) return BadRequest("Invalid Id");
+            var user = await _context.Users.Include(x =>x.BoughtPurchases).ThenInclude(x => x.Orders).SingleAsync(x => x.Id == id);
+            return Ok(user.BoughtPurchases);
+        }
+
     }
 }
