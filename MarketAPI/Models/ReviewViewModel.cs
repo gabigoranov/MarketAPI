@@ -23,7 +23,6 @@ namespace MarketAPI.Models
         public double Rating { get; set; }
         [Required]
         public string FirstName { get; set; }
-        [Required]
         public string LastName { get; set; }
     }
 }

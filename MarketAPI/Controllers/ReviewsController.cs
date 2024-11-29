@@ -20,6 +20,12 @@ namespace MarketAPI.Controllers
             _service = service;
         }
 
+        [HttpGet]
+        [Route("get")]
+        public IActionResult Get(int offerId) {
+            List<Review> reviews = _context.Reviews.Where(x => x.OfferId == offerId).ToList();
+            return Ok(reviews);
+        }
 
         [HttpPost]
         [Route("add")]
